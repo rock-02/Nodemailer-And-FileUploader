@@ -44,6 +44,8 @@ function isSuppoted(ext, types) {
   return types.includes(ext);
 }
 exports.imageUpload = async (req, res) => {
+  const email = req.body.email;
+  console.log(email," : EMAIL ID");
   const file = req.files.file;
   console.log(file);
   const ext = file.name.split(".")[1].toLowerCase();
@@ -56,12 +58,13 @@ exports.imageUpload = async (req, res) => {
   }
   try {
     const resp = await uploadFiletoCloud(file, "temp");
-    console.log(resp);
+    // console.log(resp);
     const imageFile = await fileModel.create({
       image: {
         public_id: resp.public_id,
         secure_url: resp.secure_url,
       },
+      email,
     });
     await imageFile.save();
     return res.status(200).json({
